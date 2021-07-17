@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js b/node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js
+index 949f34a..1e2e32b 100644
+--- a/node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js
++++ b/node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js
+@@ -126,7 +126,6 @@ function verifyTypeScriptSetup() {
+     skipLibCheck: { suggested: true },
+     esModuleInterop: { suggested: true },
+     allowSyntheticDefaultImports: { suggested: true },
+-    strict: { suggested: true },
+     forceConsistentCasingInFileNames: { suggested: true },
+     noFallthroughCasesInSwitch: { suggested: true },
+ 
