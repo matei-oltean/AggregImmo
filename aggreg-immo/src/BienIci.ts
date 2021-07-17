@@ -60,8 +60,7 @@ export const getOffers = async (param: Parameters): Promise<Offer[]> => {
             lastModifiedDate: new Date(value.modificationDate),
             area: value.surfaceArea,
             price: value.price,
-            pricePSM: value.price / value.surfaceArea,
             pictureUrls: value.photos.map((v: { url_photo: string }) => v.url_photo)
         }
-    }).filter((value: Offer) => !param.maxPricePerSqm || value.pricePSM <= param.maxPricePerSqm)
+    }).filter((value: Offer) => !param.maxPricePerSqm || value.price/value.area <= param.maxPricePerSqm)
 }

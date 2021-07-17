@@ -12,6 +12,7 @@ import {
 } from '@fluentui/react'
 
 import { getOffers as getBIOffers } from "./BienIci"
+import { getOffers as getLFOffers } from "./LaForet"
 
 const stackTokens: IStackTokens = { childrenGap: 20 }
 
@@ -32,10 +33,10 @@ export interface Offer {
 	description: string
 	area: number
 	price: number
-	pricePSM: number
 	zipCode: string
 	lastModifiedDate: Date
 	pictureUrls: string[]
+	street?: string
 }
 
 enum SortType {
@@ -54,7 +55,7 @@ function App() {
 	const [sortType, setSortType] = useState(SortType.date)
 	const [zipCodes, setZip] = useState(["75005"])
 	const [listings, setListings] = useState<Offer[]>([])
-	const [increasing, setIncreasing] = useState(1)
+	const [increasing, setIncreasing] = useState(-1)
 
 	return (
 		<div>
@@ -169,7 +170,7 @@ function App() {
 						onText="Increasing"
 						offText="Decreasing"
 						onChange={() => setIncreasing(-increasing)}
-						defaultChecked={true}
+						defaultChecked={false}
 					/>
 				</div>
 			</div>
@@ -186,7 +187,7 @@ function List(offers: Offer[], sortType: SortType, increasing: number) {
 			case SortType.price:
 				return increasing * (a.price - b.price)
 			case SortType.ppsm:
-				return increasing * (a.pricePSM - b.pricePSM)
+				return increasing * ((a.price / a.area) - (b.price / b.area))
 			case SortType.area:
 				return increasing * (a.area - b.area)
 			case SortType.date:
@@ -199,6 +200,7 @@ function List(offers: Offer[], sortType: SortType, increasing: number) {
 
 const updateListings = async (parameters: Parameters, updateHook: React.Dispatch<React.SetStateAction<Offer[]>>) => {
 	const offers = await getBIOffers(parameters)
+	offers.push(...await getLFOffers(parameters))
 	updateHook(offers)
 }
 
@@ -209,8 +211,11 @@ const renderOffer = (offer: Offer): JSX.Element => {
 				<a href={offer.link} target="_blank" rel="noreferrer">{offer.zipCode} {offer.title}</a>
 				<a>{offer.area} m²</a>
 				<a>{offer.price.toLocaleString("fr-FR")} €</a>
-				<a>{Math.round(offer.pricePSM).toLocaleString("fr-FR")} €/m²</a>
+				<a>{Math.round(offer.price / offer.area).toLocaleString("fr-FR")} €/m²</a>
 				<a>{offer.lastModifiedDate.toLocaleString("fr-FR")}</a>
+				{
+					offer.street && <a>{offer.street}</a>
+				}
 				<a>{stripTags(offer.description)}</a>
 				<div>
 					{offer.pictureUrls.map((url: string) => <img src={url} height={120} />)}
