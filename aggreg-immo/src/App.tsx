@@ -13,6 +13,7 @@ import {
 
 import { getOffers as getBIOffers } from "./BienIci"
 import { getOffers as getLFOffers } from "./LaForet"
+import { getOffers as getOrpiOffers } from "./Orpi"
 
 const stackTokens: IStackTokens = { childrenGap: 20 }
 
@@ -37,6 +38,7 @@ export interface Offer {
 	lastModifiedDate: Date
 	pictureUrls: string[]
 	street?: string
+	sold?: boolean
 }
 
 enum SortType {
@@ -201,6 +203,7 @@ function List(offers: Offer[], sortType: SortType, increasing: number) {
 const updateListings = async (parameters: Parameters, updateHook: React.Dispatch<React.SetStateAction<Offer[]>>) => {
 	const offers = await getBIOffers(parameters)
 	offers.push(...await getLFOffers(parameters))
+	offers.push(...await getOrpiOffers(parameters))
 	updateHook(offers)
 }
 
